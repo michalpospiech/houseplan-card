@@ -3472,7 +3472,7 @@ _SUPPORT_VERSION = vol.All(
         vol.Required("card_version"): _SUPPORT_VERSION,
         vol.Required("browser_family"): vol.In(["chromium", "firefox", "webkit", "unknown"]),
         vol.Required("browser_major"): _support_browser_major,
-        vol.Required("language"): vol.In(["en", "ru", "de", "fr"]),
+        vol.Required("language"): vol.In(["en", "ru", "de", "fr", "cs"]),
         vol.Required("coarse_pointer"): _support_bool,
         vol.Required("hover_capable"): _support_bool,
         vol.Required("registry_access"): vol.In(["full", "partial", "unavailable"]),

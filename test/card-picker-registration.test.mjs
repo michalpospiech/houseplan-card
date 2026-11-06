@@ -26,7 +26,7 @@ test('#1240: cold metadata follows the HA profile even before any card exists', 
 
 test('#1240: registered entries follow language changes with synchronous metadata and fallback', () => {
   const { cards, profile } = setup();
-  const prefixes = { en: /^Interactive/, ru: /^Интерактивный/, de: /^Interaktiver/, fr: /^Plan interactif/ };
+  const prefixes = { en: /^Interactive/, ru: /^Интерактивный/, de: /^Interaktiver/, fr: /^Plan interactif/, cs: /^Interaktivní/ };
   for (const { code, cardPicker } of LANGUAGE_REGISTRY) {
     assert.deepEqual(Object.keys(cardPicker).sort(), cards.map(card => card.type).sort());
     profile({ locale: { language: `${code.toUpperCase()}_XX` } });
@@ -39,6 +39,7 @@ test('#1240: registered entries follow language changes with synchronous metadat
   // Metadata must not trigger a full lazy dictionary request.
   assert.equal(dictionaryFor('de'), dictionaryFor('en'));
   assert.equal(dictionaryFor('fr'), dictionaryFor('en'));
+  assert.equal(dictionaryFor('cs'), dictionaryFor('en'));
   profile({ language: 'unsupported' });
   assert.equal(cards[0].name, 'House Plan Card');
   assert.match(cards[0].description, /^Interactive/);

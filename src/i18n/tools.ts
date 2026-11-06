@@ -4,7 +4,7 @@
  * ленивом графе редактора, а не в первом кадре View — их перенос из основных
  * словарей освобождает стартовый граф под LED-ленты (ТЗ #780 §13.1).
  *
- * English is static (the synchronous fallback); ru/de/fr are separate lazy
+ * English is static (the synchronous fallback); ru/de/fr/cs are separate lazy
  * chunks. The editor runtime waits for this runtime before it paints.
  */
 import { subst } from '../logic';
@@ -23,6 +23,8 @@ export const TOOLS_LANGUAGE_RUNTIME = namespaceLanguageRuntime(en, {
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_TOOLS_DE_RETRY_ASSET__'))),
   fr: (attempt) => (attempt === 0 ? import('./tools/tools-fr')
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_TOOLS_FR_RETRY_ASSET__'))),
+  cs: (attempt) => (attempt === 0 ? import('./tools/tools-cs')
+    : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_TOOLS_CS_RETRY_ASSET__'))),
 });
 
 export function toolsT(

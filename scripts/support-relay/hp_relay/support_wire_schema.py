@@ -986,7 +986,7 @@ PACKAGE = Object(
             {
                 "browser_family": enum("chromium", "firefox", "webkit", "unknown"),
                 "browser_major": COUNT,
-                "language": enum("en", "ru", "de", "fr"),
+                "language": enum("en", "ru", "de", "fr", "cs"),
                 **fields("coarse_pointer hover_capable", BOOL),
                 "registry_access": enum("full", "partial", "unavailable"),
                 "registry_age_bucket": enum("fresh", "stale", "unknown"),

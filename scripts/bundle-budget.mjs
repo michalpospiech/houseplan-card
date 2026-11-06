@@ -603,17 +603,17 @@ export const NAMESPACE_ENGLISH_CONSUMERS = {
  * Маркер — самая длинная строка словаря, которой нет ни в одном словаре
  * основного каталога (иначе совпадение с первым кадром было бы ложным).
  * Английский обязан лежать в статическом графе каждого потребителя и не лежать
- * в initial View; ru/de/fr — только в своём ленивом чанке: ни в initial View,
+ * в initial View; ru/de/fr/cs — только в своём ленивом чанке: ни в initial View,
  * ни в статических графах редактора и онбординга.
  */
 export function namespaceLocaleMarkers(source = fileURLToPath(new URL('../src/i18n/', import.meta.url))) {
   const read = (path) => JSON.parse(readFileSync(resolve(source, path), 'utf8'));
-  const main = ['en', 'ru', 'de', 'fr'].map((code) => JSON.stringify(read(`${code}.json`)));
+  const main = ['en', 'ru', 'de', 'fr', 'cs'].map((code) => JSON.stringify(read(`${code}.json`)));
   const printable = (value) => typeof value === 'string' && value.length >= 12
     && !/["'`\\\n$]/.test(value) && !main.some((dictionary) => dictionary.includes(value));
   const markers = [];
   for (const namespace of Object.keys(NAMESPACE_ENGLISH_CONSUMERS)) {
-    for (const language of ['en', 'ru', 'de', 'fr']) {
+    for (const language of ['en', 'ru', 'de', 'fr', 'cs']) {
       const values = Object.values(read(`${namespace}/${language}.json`)).filter(printable)
         .sort((left, right) => right.length - left.length || left.localeCompare(right));
       if (!values.length) throw new Error(`${namespace}/${language}: no unique marker string`);
@@ -741,7 +741,7 @@ export const LAZY_FURNITURE_ART_GZIP_CEILING = 16_940;
  *   в рантайме их не покрывает. Старый центр оставлял 425 Б сверху, меньше
  *   порога шума #593; новый — 1 025 Б сверху и 975 Б до нижней границы.
  * - #627: 246 000 → 229 600 (замер 228 621 после ребейза на #642; до
- *   ребейза — 245 400 → 228 900 при замере 227 869). ru/de/fr словарей
+ *   ребейза — 245 400 → 228 900 при замере 227 869). ru/de/fr/cs словарей
  *   `settings`, `support`, `topology` ушли из статического графа в девять
  *   ленивых чанков (по одному на пару «пространство × язык», грузится только
  *   язык на экране); в графе остался английский слой отката и загрузчик. Новая
@@ -920,7 +920,7 @@ export const LAZY_GRAPH_CEILING_BAND = 2_000;
  * и вырос 13 918 → 34 526 Б (+148 %) незаметно: общая форма #600 утащила в
  * него form-kit, `hp-color-opacity` и четыре словаря `settings`.
  *
- * Потолок 28 500 (замер 27 470): ru/de/fr словаря `settings` — ленивые чанки,
+ * Потолок 28 500 (замер 27 470): ru/de/fr/cs словаря `settings` — ленивые чанки,
  * в графе остались английский слой и загрузчик. Центр оставляет 1 030 Б
  * сверху и 970 Б до нижней границы полосы. Исходная цель ≤ 20 КБ этим не
  * достигается: остаток — form-kit, `space-form`, `hp-help` и стили набора
@@ -1086,12 +1086,12 @@ export function assertBundleBudget(
       || manifest.lazyOnboardingFiles?.includes(path))) {
     throw new Error('lazy locale graph overlaps an editor graph');
   }
-  // #627 AC3: ru/de/fr трёх словарей пространств — девять отдельных чанков,
+  // #627 AC3: ru/de/fr/cs трёх словарей пространств — девять отдельных чанков,
   // ни один не входит ни в первый кадр, ни в статический граф редакторов.
   const namespaceLocales = manifest.lazyNamespaceLocaleFiles;
   if (!Array.isArray(namespaceLocales) || namespaceLocales.length !== NAMESPACE_LOCALE_CHUNKS.length) {
     throw new Error(`lazy namespace locale graph has ${namespaceLocales?.length ?? 0} files,`
-      + ` expected ${NAMESPACE_LOCALE_CHUNKS.length} (settings/support/topology/tools/led × ru/de/fr)`);
+      + ` expected ${NAMESPACE_LOCALE_CHUNKS.length} (settings/support/topology/tools/led × ru/de/fr/cs)`);
   }
   for (const [graph, label] of [
     ['initialViewFiles', 'initial View graph'],

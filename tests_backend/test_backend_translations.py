@@ -38,7 +38,7 @@ def test_panel_backend_keys_match_source_and_all_shipped_locales() -> None:
     source = _flatten(_load(_ROOT / "strings.json"))
     assert _REQUIRED_PANEL_KEYS <= source.keys()
 
-    for locale in ("en", "ru", "de", "fr"):
+    for locale in ("en", "ru", "de", "fr", "cs"):
         translated = _flatten(_load(_ROOT / "translations" / f"{locale}.json"))
         assert translated.keys() == source.keys(), f"{locale} backend key set differs"
         for key in _REQUIRED_PANEL_KEYS:

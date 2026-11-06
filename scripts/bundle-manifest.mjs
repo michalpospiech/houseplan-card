@@ -11,6 +11,7 @@ const ONBOARDING_RETRY_ASSET_TOKEN = '__HOUSEPLAN_ONBOARDING_RETRY_ASSET__';
 const ISO_RETRY_ASSET_TOKEN = '__HOUSEPLAN_ISO_RETRY_ASSET__';
 const DE_RETRY_ASSET_TOKEN = '__HOUSEPLAN_DE_RETRY_ASSET__';
 const FR_RETRY_ASSET_TOKEN = '__HOUSEPLAN_FR_RETRY_ASSET__';
+const CS_RETRY_ASSET_TOKEN = '__HOUSEPLAN_CS_RETRY_ASSET__';
 const FURNITURE_ART_RETRY_ASSET_TOKEN = '__HOUSEPLAN_FURNITURE_ART_RETRY_ASSET__';
 const PDF_RETRY_ASSET_TOKEN = '__HOUSEPLAN_PDF_RETRY_ASSET__';
 const MOON_RETRY_ASSET_TOKEN = '__HOUSEPLAN_MOON_RETRY_ASSET__';
@@ -33,12 +34,12 @@ export const VIEW_RUNTIME_RETRY_CHUNKS = [
 ];
 
 /**
- * #627: ru/de/fr of the three lazy dictionary namespaces are one chunk per
+ * #627: ru/de/fr/cs of the three lazy dictionary namespaces are one chunk per
  * namespace × language. Their loader modules are the recognition marker for
  * the manifest graph and the target of each second-attempt retry token.
  */
 export const NAMESPACE_LOCALE_CHUNKS = ['settings', 'support', 'topology', 'tools', 'led']
-  .flatMap((namespace) => ['ru', 'de', 'fr'].map((language) => ({
+  .flatMap((namespace) => ['ru', 'de', 'fr', 'cs'].map((language) => ({
     namespace,
     language,
     module: `/src/i18n/${namespace}/${namespace}-${language}.ts`,
@@ -118,7 +119,8 @@ export function buildBundleManifest(bundle, fingerprint) {
     .map((chunk) => {
       const contents = Buffer.from(chunk.code, 'utf8');
       const modules = Object.keys(chunk.modules || {}).map((id) => id.replaceAll('\\', '/'));
-      const role = modules.some((id) => id.endsWith('/src/i18n/de.ts') || id.endsWith('/src/i18n/fr.ts'))
+      const role = modules.some((id) => id.endsWith('/src/i18n/de.ts') || id.endsWith('/src/i18n/fr.ts')
+        || id.endsWith('/src/i18n/cs.ts'))
         ? 'locale'
         : modules.some(isNamespaceLocaleModule)
           ? 'namespace-locale'
@@ -176,7 +178,7 @@ export function buildBundleManifest(bundle, fingerprint) {
     for (const path of reachable(root, byPath, 'imports')) if (!initial.has(path)) lazy.add(path);
   }
   const localeRoots = dynamicRoots.filter((path) => byPath.get(path)?._role === 'locale'
-    || /(?:^|\/)(?:de|fr)-[^/]+\.js$/.test(path));
+    || /(?:^|\/)(?:de|fr|cs)-[^/]+\.js$/.test(path));
   const onboardingRoots = dynamicRoots.filter((path) => byPath.get(path)?._role === 'onboarding'
     || path.includes('houseplan-onboarding-runtime-'));
   const editorRoots = dynamicRoots.filter((path) => (byPath.get(path)?._role === 'editor'
@@ -307,6 +309,8 @@ export function editorRuntimeRetryUrlPlugin({ coverage = coverageMapsEnabled() }
         .some((id) => id.replaceAll('\\', '/').endsWith('/src/i18n/de.ts')));
       const french = chunks.find((chunk) => Object.keys(chunk.modules)
         .some((id) => id.replaceAll('\\', '/').endsWith('/src/i18n/fr.ts')));
+      const czech = chunks.find((chunk) => Object.keys(chunk.modules)
+        .some((id) => id.replaceAll('\\', '/').endsWith('/src/i18n/cs.ts')));
       const furnitureArt = chunks.find((chunk) => Object.keys(chunk.modules)
         .some((id) => id.replaceAll('\\', '/').endsWith('/src/furniture-plan-art.generated.ts')));
       const pdf = chunks.find((chunk) => Object.keys(chunk.modules)
@@ -323,6 +327,7 @@ export function editorRuntimeRetryUrlPlugin({ coverage = coverageMapsEnabled() }
       if (!isometric) throw new Error('isometric runtime chunk was not emitted');
       if (!german) throw new Error('German locale chunk was not emitted');
       if (!french) throw new Error('French locale chunk was not emitted');
+      if (!czech) throw new Error('Czech locale chunk was not emitted');
       if (!furnitureArt) throw new Error('furniture artwork chunk was not emitted');
       if (!pdf) throw new Error('PDF export runtime chunk was not emitted');
       if (!moon) throw new Error('moon runtime chunk was not emitted');
@@ -349,6 +354,7 @@ export function editorRuntimeRetryUrlPlugin({ coverage = coverageMapsEnabled() }
       let isometricReplacements = 0;
       let germanReplacements = 0;
       let frenchReplacements = 0;
+      let czechReplacements = 0;
       let pdfReplacements = 0;
       let moonReplacements = 0;
       let ledReplacements = 0;
@@ -384,6 +390,12 @@ export function editorRuntimeRetryUrlPlugin({ coverage = coverageMapsEnabled() }
           if (!asset.startsWith('.')) asset = `./${asset}`;
           frenchReplacements += chunk.code.split(FR_RETRY_ASSET_TOKEN).length - 1;
           replaceChunkSource(chunk, FR_RETRY_ASSET_TOKEN, asset, { all: true, coverage, bundle });
+        }
+        if (chunk.code.includes(CS_RETRY_ASSET_TOKEN)) {
+          let asset = posix.relative(posix.dirname(chunk.fileName), czech.fileName);
+          if (!asset.startsWith('.')) asset = `./${asset}`;
+          czechReplacements += chunk.code.split(CS_RETRY_ASSET_TOKEN).length - 1;
+          replaceChunkSource(chunk, CS_RETRY_ASSET_TOKEN, asset, { all: true, coverage, bundle });
         }
         if (chunk.code.includes(FURNITURE_ART_RETRY_ASSET_TOKEN)) {
           let asset = posix.relative(posix.dirname(chunk.fileName), furnitureArt.fileName);
@@ -430,11 +442,12 @@ export function editorRuntimeRetryUrlPlugin({ coverage = coverageMapsEnabled() }
         }
       }
       if (editorReplacements !== 1 || onboardingReplacements !== 1 || isometricReplacements !== 1
-          || germanReplacements !== 1 || frenchReplacements !== 1 || furnitureArtReplacements !== 1
+          || germanReplacements !== 1 || frenchReplacements !== 1 || czechReplacements !== 1
+          || furnitureArtReplacements !== 1
           || pdfReplacements !== 1 || moonReplacements !== 1 || ledReplacements !== 1
           || ledFieldReplacements !== 1 || ledEditorReplacements !== 1) {
         throw new Error('lazy retry URL placeholder counts are '
-          + `${editorReplacements}/${onboardingReplacements}/${isometricReplacements}/${germanReplacements}/${frenchReplacements}/${furnitureArtReplacements}/${pdfReplacements}/${moonReplacements}/${ledReplacements}/${ledFieldReplacements}/${ledEditorReplacements}, expected 1/1/1/1/1/1/1/1/1/1/1`);
+          + `${editorReplacements}/${onboardingReplacements}/${isometricReplacements}/${germanReplacements}/${frenchReplacements}/${czechReplacements}/${furnitureArtReplacements}/${pdfReplacements}/${moonReplacements}/${ledReplacements}/${ledFieldReplacements}/${ledEditorReplacements}, expected 1/1/1/1/1/1/1/1/1/1/1/1`);
       }
       // #627: the same strict rule for every namespace × language token —
       // exactly one second-attempt URL each, never zero and never two.
@@ -548,6 +561,8 @@ export function entryFallbackPlugin({ coverage = coverageMapsEnabled() } = {}) {
     + '?"House Plan wurde aktualisiert — bitte laden Sie die Seite neu (Strg+F5)."'
     + ':l.startsWith("fr")'
     + '?"House Plan a été mis à jour — veuillez recharger la page (Ctrl+F5)."'
+    + ':l.startsWith("cs")'
+    + '?"House Plan byl aktualizován — obnovte prosím stránku (Ctrl+F5)."'
     + ':"House Plan was updated — please reload the page (Ctrl+F5).";'
     + `customElements.define("${contract.element}",class extends HTMLElement{`
     + (contract.cardFallback ? 'setConfig(){}getCardSize(){return 1}' : '')

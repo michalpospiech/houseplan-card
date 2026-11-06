@@ -1,0 +1,69 @@
+{
+  "config": {
+    "step": {
+      "previous_data": {
+        "title": "Nalezena předchozí instalace",
+        "description": "Nalezena předchozí data: prostory — {spaces}, soubory — {files}, poslední změna — {modified}. {warning}\n\nZačít znovu přesune všechna předchozí data do trvalého archivu. Dokud nepotvrdíte další formulář, žádná data se nezmění.",
+        "menu_options": {
+          "restore": "Obnovit předchozí plány",
+          "start_fresh": "Začít znovu"
+        }
+      },
+      "user": {
+        "title": "House Plan",
+        "data": {
+          "admin_only": "Rozvržení mohou upravovat pouze administrátoři"
+        }
+      }
+    },
+    "create_entry": {
+      "panel_ready": "Až bude položka k dispozici, otevřete House Plan z postranního panelu. Pro úpravy doporučujeme prohlížeč na počítači. Pokud položka chybí, použijte kartu House Plan na ovládacím panelu a zkontrolujte Stav systému."
+    },
+    "error": {
+      "previous_data_unreadable": "Předchozí konfiguraci se nepodařilo načíst."
+    },
+    "abort": {
+      "single_instance_allowed": "Již nakonfigurováno — povolena je pouze jedna položka.",
+      "already_in_progress": "Jiné nastavení House Plan již probíhá.",
+      "previous_data_error": "Předchozí data se nepodařilo prozkoumat. Zkontrolujte oprávnění k souborům a protokol Home Assistantu; žádná data nebyla změněna.",
+      "archive_failed": "Předchozí data se nepodařilo archivovat. Žádná položka nebyla vytvořena. Cestu k archivu a postup obnovy najdete v protokolu Home Assistantu."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "admin_only": "Rozvržení mohou upravovat pouze administrátoři"
+        }
+      }
+    }
+  },
+  "issues": {
+    "broken_plan": {
+      "title": "Chybí obrázek půdorysu",
+      "description": "Soubor plánu `{file}` pro prostor `{space}` nebyl nalezen v `config/houseplan/plans/`. Otevřete nastavení prostoru na kartě House Plan a nahrajte plán znovu."
+    },
+    "frontend_reload_notice": {
+      "title": "House Plan je připraven",
+      "description": "Otevřete House Plan z postranního panelu. Po aktualizaci stránku úplně obnovte, aby se načetl nejnovější frontend (`Ctrl+F5` na Windows/Linuxu nebo `Cmd+Shift+R` na macOS). Karta na ovládacím panelu zůstává dostupná; pokud její zdroj spravujete ručně v režimu úložiště, otevřete Nastavení → Ovládací panely → Zdroje. Pokud položka v postranním panelu chybí, zkontrolujte House Plan ve Stavu systému."
+    }
+  },
+  "system_health": {
+    "info": {
+      "card_file": "Soubor karty House Plan",
+      "static_path": "Statická cesta frontendu",
+      "resource_status": "Stav registrace zdroje",
+      "resource_loader": "Načítání zdroje frontendu",
+      "resource_url": "URL zdroje frontendu",
+      "resource_retry": "Opakování registrace zdroje",
+      "resource_error": "Chyba registrace frontendu",
+      "first_reload_notice": "Upozornění na první obnovení",
+      "panel_file": "Soubor panelu House Plan",
+      "panel_static_path": "Statická cesta frontendu panelu",
+      "panel_status": "Stav registrace panelu",
+      "panel_url": "URL panelu House Plan",
+      "panel_module_url": "URL modulu panelu",
+      "panel_error": "Chyba registrace panelu"
+    }
+  }
+}

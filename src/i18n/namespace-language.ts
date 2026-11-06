@@ -1,7 +1,7 @@
 /**
  * #627: page-scoped runtime of one lazy dictionary namespace (`settings`,
  * `support`, `topology`). English is static — the synchronous fallback layer,
- * exactly as in the main catalog — and ru/de/fr are separate lazy chunks, one
+ * exactly as in the main catalog — and ru/de/fr/cs are separate lazy chunks, one
  * per namespace × language, loaded only for the language on screen.
  *
  * It IS the tested `LanguageRuntime` (#354): two bounded attempts, the exact
@@ -22,6 +22,7 @@ export interface NamespaceLoaders {
   readonly ru: NamespaceLoader;
   readonly de: NamespaceLoader;
   readonly fr: NamespaceLoader;
+  readonly cs: NamespaceLoader;
 }
 
 export function namespaceLanguageRuntime(
@@ -33,6 +34,7 @@ export function namespaceLanguageRuntime(
     { code: 'ru', loadDictionary: loaders.ru },
     { code: 'de', loadDictionary: loaders.de },
     { code: 'fr', loadDictionary: loaders.fr },
+    { code: 'cs', loadDictionary: loaders.cs },
   ], BUILD_FINGERPRINT, console.warn, notifyLanguageLoadFailures);
 }
 

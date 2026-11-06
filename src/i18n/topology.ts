@@ -8,7 +8,7 @@ export type TopologyI18nKey = keyof typeof en;
 const retryUrl = (asset: string): string => new URL(`${asset}?retry`, import.meta.url).href;
 
 /**
- * #627: English is static (the synchronous fallback); ru/de/fr are separate
+ * #627: English is static (the synchronous fallback); ru/de/fr/cs are separate
  * lazy chunks. The View overlay and the editor runtime both wait for this
  * runtime before they paint topology copy.
  */
@@ -19,6 +19,8 @@ export const TOPOLOGY_LANGUAGE_RUNTIME = namespaceLanguageRuntime(en, {
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_TOPOLOGY_DE_RETRY_ASSET__'))),
   fr: (attempt) => (attempt === 0 ? import('./topology/topology-fr')
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_TOPOLOGY_FR_RETRY_ASSET__'))),
+  cs: (attempt) => (attempt === 0 ? import('./topology/topology-cs')
+    : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_TOPOLOGY_CS_RETRY_ASSET__'))),
 });
 
 /**

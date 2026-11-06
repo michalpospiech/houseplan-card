@@ -41,6 +41,16 @@ const copy = {
     directions: ['nord', 'nord-est', 'est', 'sud-est', 'sud', 'sud-ouest', 'ouest', 'nord-ouest'],
     conditions: ['Nuit claire', 'Nuageux', 'Temps exceptionnel', 'Brouillard', 'Grêle', 'Orage', 'Orage et pluie', 'Partiellement nuageux', 'Forte pluie', 'Pluie', 'Neige', 'Pluie et neige', 'Ensoleillé', 'Venteux', 'Venteux et nuageux'],
   },
+  cs: {
+    title: 'Počasí', show: 'Zobrazovat počasí', source: 'Zdroj počasí', choose: 'Vyberte zdroj počasí',
+    no_source: 'Přidejte v Home Assistantu integraci počasí, aby se počasí mohlo zobrazovat.',
+    select_source: 'Vyberte zdroj počasí v nastavení panelu.',
+    deleted: 'Zdroj počasí byl odebrán. Vyberte jiný v nastavení panelu.',
+    unavailable: 'Počasí je dočasně nedostupné', removed: 'Zdroj odebrán',
+    feels: 'Pocitově', wind: 'Vítr', humidity: 'Vlhkost', today: 'Dnes', more: 'Více o počasí',
+    directions: ['severní', 'severovýchodní', 'východní', 'jihovýchodní', 'jižní', 'jihozápadní', 'západní', 'severozápadní'],
+    conditions: ['Jasná noc', 'Oblačno', 'Neobvyklé počasí', 'Mlha', 'Kroupy', 'Bouřky', 'Bouřky s deštěm', 'Polojasno', 'Liják', 'Déšť', 'Sněžení', 'Déšť se sněhem', 'Slunečno', 'Větrno', 'Větrno a oblačno'],
+  },
 };
 type Key = Exclude<keyof typeof copy.en, 'directions' | 'conditions'>;
 const conditions = ['clear-night', 'cloudy', 'exceptional', 'fog', 'hail', 'lightning', 'lightning-rainy', 'partlycloudy', 'pouring', 'rainy', 'snowy', 'snowy-rainy', 'sunny', 'windy', 'windy-variant'];

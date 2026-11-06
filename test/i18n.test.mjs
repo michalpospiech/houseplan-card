@@ -22,6 +22,7 @@ const en = dictionaries.get('en');
 const ru = dictionaries.get('ru');
 const de = dictionaries.get('de');
 const fr = dictionaries.get('fr');
+const cs = dictionaries.get('cs');
 const cardSource = readHouseplanProductionSource();
 const onboardingSource = readFileSync(
   new URL('../src/houseplan-onboarding-runtime.ts', import.meta.url),
@@ -170,7 +171,7 @@ test('i18n: placeholders match between languages', () => {
 });
 
 test('i18n: resolver supports exact, primary, explicit and fallback paths', () => {
-  const supported = ['en', 'ru', 'de', 'fr', 'pt-BR'];
+  const supported = ['en', 'ru', 'de', 'fr', 'cs', 'pt-BR'];
   const cases = [
     { explicit: 'RU', ha: 'en-US', expected: 'ru' },
     { explicit: 'pt_BR', ha: 'ru-RU', expected: 'pt-BR' },
@@ -186,6 +187,9 @@ test('i18n: resolver supports exact, primary, explicit and fallback paths', () =
     { explicit: undefined, ha: 'fr-CA', expected: 'fr' },
     { explicit: undefined, ha: 'fr_BE', expected: 'fr' },
     { explicit: undefined, ha: 'fr-CH', expected: 'fr' },
+    { explicit: undefined, ha: 'cs', expected: 'cs' },
+    { explicit: undefined, ha: 'cs-CZ', expected: 'cs' },
+    { explicit: undefined, ha: 'cs_CZ', expected: 'cs' },
   ];
   for (const { explicit, ha, expected } of cases) {
     assert.equal(resolveLanguageCode(explicit, ha, supported, 'en'), expected);
@@ -198,6 +202,7 @@ test('i18n: langOf wires card config and both HA locale shapes to the registry',
   assert.equal(langOf({ language: 'ru-RU' }, 'unknown'), 'ru');
   assert.equal(langOf({ locale: { language: 'de-DE' } }, 'unknown'), 'de');
   assert.equal(langOf({ locale: { language: 'fr-CA' } }, 'unknown'), 'fr');
+  assert.equal(langOf({ locale: { language: 'cs-CZ' } }, 'unknown'), 'cs');
 });
 
 test('i18n: editor options follow registry order and preserve unknown raw values', () => {
@@ -550,5 +555,44 @@ test('i18n: French values equal to English are explicitly reviewed (#371)', () =
     'stairs.rotation',
   ]);
   const equalKeys = Object.keys(en).filter((key) => en[key] === fr[key]);
+  assert.deepEqual(new Set(equalKeys), allowed);
+});
+
+
+test('i18n: Czech catalog keeps the product glossary and has no translation sentinels', () => {
+  assert.equal(cs['btn.save'], 'Uložit');
+  assert.equal(cs['btn.cancel'], 'Zrušit');
+  assert.equal(cs['btn.delete'], 'Smazat');
+  assert.equal(cs['space.header'], 'Prostor');
+  assert.equal(cs['physical.partition_properties'], 'Vlastnosti příčky');
+  assert.equal(cs['opening.passage'], 'Otevřený průchod');
+  for (const [key, value] of Object.entries(cs)) {
+    assert.doesNotMatch(value, /ZXQPH|QXZ|⟦HP/u, `cs:${key} contains a translator sentinel`);
+    assert.doesNotMatch(value, /[А-Яа-яЁё]/u, `cs:${key} contains Cyrillic text`);
+  }
+});
+
+test('i18n: Czech values equal to English are explicitly reviewed', () => {
+  const allowed = new Set([
+    'color_picker.confirm', // OK is the same confirmation label.
+    'opening.info_named', // the shared {kind}: {name} format is language-neutral.
+    'confirm.delete_partition_openings_item', // a bullet template of placeholders only.
+    'info.model', // Model is the same word in Czech.
+    'marker.pulse_a11y_alarm', // Alarm is the Czech term as well.
+    'marker.state_a11y_alarm', // Alarm is the Czech term as well.
+    'marker.model_label', // Model is the same word in Czech.
+    'rules.icon_ph', // an MDI icon identifier.
+    'space.label_co2', // chemical formula.
+    'roomcard.co2_label', // CO₂ and ppm are language-neutral symbols.
+    'decor.text', // Text is the same word in Czech.
+    'decor.text_label', // Text is the same word in Czech.
+    'gs.unit_m', // unit symbol.
+    'gs.unit_ft', // unit symbol.
+    'wallthick.unit_cm', // unit symbol.
+    'wallthick.unit_in', // unit symbol.
+    'gs.about_version', // product name and version.
+    'gs.optimize_live_names', // a placeholder-only list template.
+  ]);
+  const equalKeys = Object.keys(en).filter((key) => en[key] === cs[key]);
   assert.deepEqual(new Set(equalKeys), allowed);
 });

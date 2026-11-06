@@ -1,0 +1,10 @@
+{
+  "houseplan-card": {
+    "name": "House Plan — Plán domu",
+    "description": "Interaktivní plán domu: prostory, místnosti a zařízení s živými stavy a rozmístěním přetahováním."
+  },
+  "houseplan-space-card": {
+    "name": "House Plan — Prostor (jen zobrazení)",
+    "description": "Živé schéma jednoho prostoru House Plan jen pro čtení, s tlačítkem pro přímý odkaz."
+  }
+}

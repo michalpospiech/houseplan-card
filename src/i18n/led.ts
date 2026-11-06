@@ -1,6 +1,6 @@
 /**
  * Lazy dictionary of the LED strip tool (#780). English is static in the LED
- * editor chunk (the synchronous fallback), ru/de/fr are separate lazy chunks;
+ * editor chunk (the synchronous fallback), ru/de/fr/cs are separate lazy chunks;
  * the LED editor waits for this runtime before it paints its copy. Nothing
  * of it reaches the initial View graph or the editor runtime graph.
  */
@@ -20,6 +20,8 @@ export const LED_LANGUAGE_RUNTIME = namespaceLanguageRuntime(en, {
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_LED_DE_RETRY_ASSET__'))),
   fr: (attempt) => (attempt === 0 ? import('./led/led-fr')
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_LED_FR_RETRY_ASSET__'))),
+  cs: (attempt) => (attempt === 0 ? import('./led/led-cs')
+    : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_LED_CS_RETRY_ASSET__'))),
 });
 
 export function ledT(

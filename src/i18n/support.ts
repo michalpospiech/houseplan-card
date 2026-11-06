@@ -1,7 +1,7 @@
 /**
  * Lazy editor-only dictionaries owned by the editor runtime (#423).
  *
- * #627: English is static (the synchronous fallback); ru/de/fr are separate
+ * #627: English is static (the synchronous fallback); ru/de/fr/cs are separate
  * lazy chunks, one per language, loaded only for the language on screen.
  */
 import { subst } from '../logic';
@@ -20,6 +20,8 @@ export const SUPPORT_LANGUAGE_RUNTIME = namespaceLanguageRuntime(en, {
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_SUPPORT_DE_RETRY_ASSET__'))),
   fr: (attempt) => (attempt === 0 ? import('./support/support-fr')
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_SUPPORT_FR_RETRY_ASSET__'))),
+  cs: (attempt) => (attempt === 0 ? import('./support/support-cs')
+    : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_SUPPORT_CS_RETRY_ASSET__'))),
 });
 
 /** Translate editor-only copy with the same synchronous English fallback. */

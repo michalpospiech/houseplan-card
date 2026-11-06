@@ -108,6 +108,7 @@ export type PropertiesString = Key;
 const localized: Record<string, Partial<Record<Key,string>>> = {
   de: { contour_context: 'A und B sind die Endpunkte der ausgewählten Wand. Verschieben Sie ihre Knoten im Plan: Verbundene Nachbarwände werden mitbewegt.', into_room: 'In den Raum „{name}“', outside: 'Nach außen' },
   fr: { contour_context: 'A et B sont les extrémités du mur sélectionné. Déplacez leurs nœuds sur le plan : les murs voisins qui y sont reliés se déplaceront aussi.', into_room: 'Vers la pièce « {name} »', outside: 'Vers l’extérieur' },
+  cs: { contour_context: 'A a B jsou koncové body vybrané stěny. Přesuňte jejich uzly na plánu: připojené sousední stěny se posunou s nimi.', into_room: 'Do místnosti „{name}“', outside: 'Ven' },
 };
 export const PROPERTIES_KEYS = Object.keys(en) as Key[];
 export const propertiesT = (language: string, key: Key, vars?: Record<string, string | number>): string =>

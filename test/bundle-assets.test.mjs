@@ -338,7 +338,7 @@ test('bundle manifest separates static initial graph from dynamic editor graph',
   }
   assert.throws(() => assertBundleBudget({
     ...manifest, lazyNamespaceLocaleFiles: manifest.lazyNamespaceLocaleFiles.slice(1),
-  }, 1_000_000, undefined, ...lazyCeilings), /lazy namespace locale graph has 14 files, expected 15/);
+  }, 1_000_000, undefined, ...lazyCeilings), /lazy namespace locale graph has 19 files, expected 20/);
   // #661 AC8: a moon pulled into the first frame (a static import leaves no
   // lazy moon graph — the builder subtracts initial) is refused by name.
   assert.throws(() => assertBundleBudget({ ...manifest, lazyMoonFiles: [] }, 1_000_000, undefined, ...lazyCeilings),
@@ -802,6 +802,7 @@ test('retry URL points at the content-hashed runtime chunk after naming', () => 
         + 'new URL("__HOUSEPLAN_ISO_RETRY_ASSET__", import.meta.url);'
         + 'new URL("__HOUSEPLAN_DE_RETRY_ASSET__", import.meta.url);'
         + 'new URL("__HOUSEPLAN_FR_RETRY_ASSET__", import.meta.url);'
+        + 'new URL("__HOUSEPLAN_CS_RETRY_ASSET__", import.meta.url);'
         + 'new URL("__HOUSEPLAN_FURNITURE_ART_RETRY_ASSET__", import.meta.url);'
         + 'new URL("__HOUSEPLAN_PDF_RETRY_ASSET__", import.meta.url);'
         + 'new URL("__HOUSEPLAN_MOON_RETRY_ASSET__", import.meta.url);'
@@ -835,6 +836,10 @@ test('retry URL points at the content-hashed runtime chunk after naming', () => 
     'houseplan-assets/fr-HASH.js': {
       type: 'chunk', fileName: 'houseplan-assets/fr-HASH.js', code: '',
       modules: { '/repo/src/i18n/fr.ts': {} },
+    },
+    'houseplan-assets/cs-HASH.js': {
+      type: 'chunk', fileName: 'houseplan-assets/cs-HASH.js', code: '',
+      modules: { '/repo/src/i18n/cs.ts': {} },
     },
     'houseplan-assets/furniture-plan-art.generated-HASH.js': {
       type: 'chunk', fileName: 'houseplan-assets/furniture-plan-art.generated-HASH.js', code: '',
@@ -898,6 +903,7 @@ test('retry URL points at the content-hashed runtime chunk after naming', () => 
       + 'new URL("./iso-scene-render-HASH.js", import.meta.url);'
       + 'new URL("./de-HASH.js", import.meta.url);'
       + 'new URL("./fr-HASH.js", import.meta.url);'
+      + 'new URL("./cs-HASH.js", import.meta.url);'
       + 'new URL("./furniture-plan-art.generated-HASH.js", import.meta.url);'
       + 'new URL("./pdf-export-HASH.js", import.meta.url);'
       + 'new URL("./moon-runtime-HASH.js", import.meta.url);'
@@ -916,14 +922,14 @@ test('#627 namespace retry tokens stay strict: exactly one each, every chunk emi
     const bundle = {
       'houseplan-assets/houseplan-card.js': {
         type: 'chunk', fileName: 'houseplan-assets/houseplan-card.js', modules: {},
-        code: ['EDITOR', 'ONBOARDING', 'ISO', 'DE', 'FR', 'FURNITURE_ART', 'PDF', 'MOON', 'LED', 'LED_FIELD', 'LED_EDITOR']
+        code: ['EDITOR', 'ONBOARDING', 'ISO', 'DE', 'FR', 'CS', 'FURNITURE_ART', 'PDF', 'MOON', 'LED', 'LED_FIELD', 'LED_EDITOR']
           .map((name) => `"__HOUSEPLAN_${name}_RETRY_ASSET__"`).join(';'),
       },
       ...Object.fromEntries([
         ['houseplan-editor-runtime', '/src/houseplan-editor-runtime.ts'],
         ['houseplan-onboarding-runtime', '/src/houseplan-onboarding-runtime.ts'],
         ['iso-scene-render', '/src/iso-scene-render.ts'], ['de', '/src/i18n/de.ts'],
-        ['fr', '/src/i18n/fr.ts'], ['furniture-plan-art.generated', '/src/furniture-plan-art.generated.ts'],
+        ['fr', '/src/i18n/fr.ts'], ['cs', '/src/i18n/cs.ts'], ['furniture-plan-art.generated', '/src/furniture-plan-art.generated.ts'],
         ['pdf-export', '/src/pdf/pdf-export.ts'], ['moon-runtime', '/src/moon-runtime.ts'],
         ['led-strip-runtime', '/src/led-strip-runtime.ts'], ['led-strip-field', '/src/led-strip-field.ts'],
         ['led-strip-editor', '/src/led-strip-editor.ts'],
@@ -949,7 +955,7 @@ test('#627 namespace retry tokens stay strict: exactly one each, every chunk emi
         ['EDITOR_RUNTIME_FINGERPRINT', 'EDITOR_LANGUAGE_RUNTIME', 'HouseplanEditorRuntime'].filter(key => key !== name);
     }), new RegExp(`raw-URL retry missing named export ${name}`));
   }
-  const token = NAMESPACE_LOCALE_CHUNKS[4].token;
+  const token = NAMESPACE_LOCALE_CHUNKS.find((entry) => entry.namespace === 'support' && entry.language === 'de').token;
   assert.throws(() => run((bundle) => {
     bundle['houseplan-assets/lazy-HASH.js'].code = bundle['houseplan-assets/lazy-HASH.js'].code.replace(`"${token}"`, '""');
   }), /namespace locale retry URL placeholder counts are support-de=0, expected exactly 1 each/);
@@ -957,7 +963,7 @@ test('#627 namespace retry tokens stay strict: exactly one each, every chunk emi
     bundle['houseplan-assets/lazy-HASH.js'].code += `;"${token}"`;
   }), /support-de=2/);
   assert.throws(() => run((bundle) => {
-    delete bundle[namespaceLocaleChunkPath(NAMESPACE_LOCALE_CHUNKS[8])];
+    delete bundle[namespaceLocaleChunkPath(NAMESPACE_LOCALE_CHUNKS.find((entry) => entry.namespace === 'topology' && entry.language === 'fr'))];
   }), /topology fr locale chunk was not emitted/);
 });
 
@@ -1504,8 +1510,8 @@ test('#627 AC3 проверка владения краснеет на кажд�
   }
   // Маркеры реальных словарей не совпадают ни с одной строкой основного каталога.
   const real = namespaceLocaleMarkers();
-  assert.equal(real.length, 20);
-  assert.equal(new Set(real.map((entry) => entry.text)).size, 20);
+  assert.equal(real.length, 25);
+  assert.equal(new Set(real.map((entry) => entry.text)).size, 25);
 });
 
 
@@ -1538,8 +1544,8 @@ test('#1018 AC3 real fallback rewrite preserves panel source after inserted catc
 });
 
 test('#1018 AC3 actual raw retry URL plugin keeps sentinels before/after different-length URLs and map asset synchronized', () => {
-  const names = ['EDITOR', 'ONBOARDING', 'ISO', 'DE', 'FR', 'FURNITURE_ART', 'PDF', 'MOON', 'LED', 'LED_FIELD', 'LED_EDITOR'];
-  const modules = ['houseplan-editor-runtime', 'houseplan-onboarding-runtime', 'iso-scene-render', 'i18n/de', 'i18n/fr',
+  const names = ['EDITOR', 'ONBOARDING', 'ISO', 'DE', 'FR', 'CS', 'FURNITURE_ART', 'PDF', 'MOON', 'LED', 'LED_FIELD', 'LED_EDITOR'];
+  const modules = ['houseplan-editor-runtime', 'houseplan-onboarding-runtime', 'iso-scene-render', 'i18n/de', 'i18n/fr', 'i18n/cs',
     'furniture-plan-art.generated', 'pdf/pdf-export', 'moon-runtime', 'led-strip-runtime', 'led-strip-field', 'led-strip-editor'];
   const source = 'const before=114466;' + names.map(name => `import("__HOUSEPLAN_${name}_RETRY_ASSET__");`).join('')
     + NAMESPACE_LOCALE_CHUNKS.map(entry => `import("${entry.token}?retry");`).join('')

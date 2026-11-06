@@ -4,7 +4,7 @@
  * своём словаре, а не в `support` — иначе онбординг тянул бы весь словарь
  * редактора ради подписей одной формы.
  *
- * #627: статически здесь только английский — слой отката; ru/de/fr — отдельные
+ * #627: статически здесь только английский — слой отката; ru/de/fr/cs — отдельные
  * ленивые чанки, по одному на язык, и грузится только язык на экране. Готовность
  * до отрисовки обеспечивают загрузчики рантаймов и составной гейт хоста.
  */
@@ -24,6 +24,8 @@ export const SETTINGS_LANGUAGE_RUNTIME = namespaceLanguageRuntime(en, {
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_SETTINGS_DE_RETRY_ASSET__'))),
   fr: (attempt) => (attempt === 0 ? import('./settings/settings-fr')
     : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_SETTINGS_FR_RETRY_ASSET__'))),
+  cs: (attempt) => (attempt === 0 ? import('./settings/settings-cs')
+    : import(/* @vite-ignore */ retryUrl('__HOUSEPLAN_SETTINGS_CS_RETRY_ASSET__'))),
 });
 
 const entryOf = (lang: Lang, key: SettingsI18nKey): string | undefined =>

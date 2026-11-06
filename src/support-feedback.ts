@@ -114,7 +114,7 @@ export interface SupportDialogState {
 export interface SupportRuntimeFacts {
   browser_family: 'chromium' | 'firefox' | 'webkit' | 'unknown';
   browser_major: number;
-  language: 'en' | 'ru' | 'de' | 'fr';
+  language: 'en' | 'ru' | 'de' | 'fr' | 'cs';
   coarse_pointer: boolean;
   hover_capable: boolean;
   registry_access: 'full' | 'partial' | 'unavailable';
@@ -219,7 +219,7 @@ export function supportRuntimeFacts(
   const now = options.now ?? Date.now();
   const last = Number(options.registryLastSuccess || 0);
   const age = last <= 0 ? 'unknown' : now - last <= 10 * 60_000 ? 'fresh' : 'stale';
-  const languages: readonly string[] = ['en', 'ru', 'de', 'fr'];
+  const languages: readonly string[] = ['en', 'ru', 'de', 'fr', 'cs'];
   const language = languages.includes(options.language)
     ? options.language as SupportRuntimeFacts['language'] : 'en';
   const media = globalThis.matchMedia?.bind(globalThis);

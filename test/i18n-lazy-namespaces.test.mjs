@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { NAMESPACE_LOCALE_CHUNKS } from '../scripts/bundle-manifest.mjs';
 
 const NAMESPACES = ['settings', 'support', 'topology', 'tools', 'led'];
-const LAZY_LANGUAGES = ['ru', 'de', 'fr'];
+const LAZY_LANGUAGES = ['ru', 'de', 'fr', 'cs'];
 const source = (path) => readFileSync(new URL(`../src/i18n/${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(source(path));
 const escape = (value) => value.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');

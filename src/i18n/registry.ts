@@ -4,6 +4,7 @@ import pickerEn from './card-picker/en.json' with { type: 'json' };
 import pickerRu from './card-picker/ru.json' with { type: 'json' };
 import pickerDe from './card-picker/de.json' with { type: 'json' };
 import pickerFr from './card-picker/fr.json' with { type: 'json' };
+import pickerCs from './card-picker/cs.json' with { type: 'json' };
 import {
   LanguageRuntime,
   type LanguageRuntimeContract,
@@ -14,6 +15,7 @@ import { ENTRY_BUILD_FINGERPRINT as BUILD_FINGERPRINT } from '../editor-runtime-
 
 const GERMAN_RETRY_ASSET = '__HOUSEPLAN_DE_RETRY_ASSET__';
 const FRENCH_RETRY_ASSET = '__HOUSEPLAN_FR_RETRY_ASSET__';
+const CZECH_RETRY_ASSET = '__HOUSEPLAN_CS_RETRY_ASSET__';
 
 export type PickerCardType = keyof typeof pickerEn;
 
@@ -41,6 +43,13 @@ async function loadFrench(attempt: 0 | 1): Promise<LazyLanguageModule> {
   return { dictionary: module.dictionary, fingerprint: module.fingerprint };
 }
 
+async function loadCzech(attempt: 0 | 1): Promise<LazyLanguageModule> {
+  const module = attempt === 0
+    ? await import('./cs')
+    : await import(/* @vite-ignore */ new URL(`${CZECH_RETRY_ASSET}?retry`, import.meta.url).href);
+  return { dictionary: module.dictionary, fingerprint: module.fingerprint };
+}
+
 /**
  * The single runtime registry of shipped UI languages.
  *
@@ -52,6 +61,7 @@ export const LANGUAGE_REGISTRY = [
   { code: 'ru', nativeLabel: 'Русский', cardPicker: pickerRu, dictionary: ru },
   { code: 'de', nativeLabel: 'Deutsch', cardPicker: pickerDe, loadDictionary: loadGerman },
   { code: 'fr', nativeLabel: 'Français', cardPicker: pickerFr, loadDictionary: loadFrench },
+  { code: 'cs', nativeLabel: 'Čeština', cardPicker: pickerCs, loadDictionary: loadCzech },
 ] as const satisfies readonly LanguageEntry[];
 
 export type Lang = (typeof LANGUAGE_REGISTRY)[number]['code'];

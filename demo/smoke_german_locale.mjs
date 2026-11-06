@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { launchColdView, checkAll, finish } from './serve.mjs';
 
 const manifest = JSON.parse(readFileSync('dist/houseplan-assets.json', 'utf8'));
-const localePath = manifest.lazyLocaleFiles?.[0];
+const localePath = manifest.lazyLocaleFiles?.find((path) => /(?:^|\/)de-[^/]+\.js$/.test(path));
 if (!localePath) throw new Error('German locale is absent from the bundle manifest');
 const localeName = localePath.split('/').at(-1);
 const localePattern = `**/${localeName}*`;

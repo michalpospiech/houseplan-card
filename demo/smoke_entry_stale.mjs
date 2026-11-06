@@ -60,15 +60,19 @@ const run = async (locale, surface = 'card') => {
 const en = await run('en-US');
 const ru = await run('ru-RU');
 const fr = await run('fr-FR');
+const cs = await run('cs-CZ');
 const panel = await run('en-US', 'panel');
 const out = {
-  entrySurvivesMissingChunk: en.pageErrors === 0 && ru.pageErrors === 0 && fr.pageErrors === 0,
+  entrySurvivesMissingChunk: en.pageErrors === 0 && ru.pageErrors === 0 && fr.pageErrors === 0
+    && cs.pageErrors === 0,
   englishMessageVisible: en.text.includes('House Plan was updated')
     && en.text.includes('reload the page'),
   russianMessageVisible: ru.text.includes('House Plan обновился')
     && ru.text.includes('перезагрузите страницу'),
   frenchMessageVisible: fr.text.includes('House Plan a été mis à jour')
     && fr.text.includes('recharger la page'),
+  czechMessageVisible: cs.text.includes('House Plan byl aktualizován')
+    && cs.text.includes('obnovte prosím stránku'),
   panelEntrySurvivesMissingChunk: panel.pageErrors === 0,
   panelMessageVisible: panel.text.includes('House Plan was updated')
     && panel.text.includes('reload the page'),
